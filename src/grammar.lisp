@@ -68,7 +68,7 @@
         #+esrap.function-terminals name-component-separator/expression))
 
 (defrule name-component
-    (+ (or quoted (not (or comment
+    (+ (or quoted (not (or comment whitespace
                            name-component-separator
                            #\[ #\]
                            assignment-operator))))
@@ -80,10 +80,23 @@
   (:destructure (first rest)
     (cons first (mapcar #'second rest))))
 
+(defrule section-name-component
+    (+ (or quoted (not (or comment
+                           name-component-separator
+                           #\[ #\]
+                           assignment-operator))))
+  (:text t))
+
+(defrule section-name
+    (and section-name-component
+         (* (and name-component-separator section-name-component)))
+  (:destructure (first rest)
+    (cons first (mapcar #'second rest))))
+
 ;; Sections
 
 (defrule section
-    (and #\[ name #\])
+    (and #\[ section-name #\])
   (:destructure (open name close &bounds start end)
     (declare (ignore open close))
     (list :section (list name (cons start end)))))

@@ -68,7 +68,7 @@
         #+esrap.function-terminals name-component-separator/expression))
 
 (defrule name-component
-    (+ (or quoted (not (or comment whitespace
+    (+ (or quoted (not (or comment
                            name-component-separator
                            #\[ #\]
                            assignment-operator))))
